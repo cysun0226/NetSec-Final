@@ -131,7 +131,7 @@ def json_analyze(path_list):
     del sort_ip
     del ip_count
     
-path_list = ["Train/Person_"+ str(person) +"/Wireshark.json" for person in range(1,7)]
-path_list += ["Example Test/Test_"+ str(person) +"/Wireshark.json" for person in range(1,3)]
-json_analyze(path_list)
+#path_list = ["Train/Person_"+ str(person) +"/Wireshark.json" for person in range(1,7)]
+#path_list += ["Example Test/Test_"+ str(person) +"/Wireshark.json" for person in range(1,3)]
+#json_analyze(path_list)
 
