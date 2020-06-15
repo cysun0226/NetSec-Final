@@ -1,4 +1,4 @@
-OCCUR_WEIGHT = 0.7
+OCCUR_WEIGHT = 0.75
 
 DROP_LIST = [
   'system.Opcode',

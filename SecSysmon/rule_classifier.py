@@ -1,6 +1,8 @@
 from .config import DROP_LIST, IMPORTANCE, OCCUR_WEIGHT
 from scipy.spatial.distance import cosine
 import pandas as pd
+import numpy as np
+np.seterr(invalid='ignore')
 
 class Analyzer():
     """
@@ -9,9 +11,9 @@ class Analyzer():
     def __init__(self, readers):
         """
         Args:
-            train_readers (list): a list of (label, readers) of training data
+            readers (list): a list of (label, readers) of input data
         """
-        self.train_data = readers
+        self.data = readers
         self.features = None
         self.value_dict = {}
         self.statistics = {}
@@ -23,20 +25,20 @@ class Analyzer():
 
     def collect_features(self):
         """ Get the union of all dataframe columns """
-        self.features = list(set().union(*[data[1].dataframe.columns for data in self.train_data]))
+        self.features = list(set().union(*[data[1].dataframe.columns for data in self.data]))
         self.features = [attr for attr in self.features if attr not in DROP_LIST] # drop useless features
         # build value dict of each feature
         for attr in self.features:
             # concat all values of this feature
             self.value_dict[attr] =\
-                list(set().union(*[data.df_data[attr] for _, data in self.train_data if attr in data.df_data]))
+                list(set().union(*[data.df_data[attr] for _, data in self.data if attr in data.df_data]))
 
     def analyze(self):
         """ For each feature, compute the composition of each data """
         for attr in self.features:
             self.statistics[attr] = {}
             self.occurence[attr] = {}
-            for label, reader in self.train_data:
+            for label, reader in self.data:
                 values = {attr: 0 for attr in self.value_dict[attr]}
                 occur = 0
                 if (attr in reader.df_data):
@@ -64,10 +66,17 @@ class RuleClassifier():
         self.occur_weight = occur_weight
 
     def predict(self, test_reader):
-        """ Predict the given data """
+        """ 
+        Predict the given data.
+        Args:
+            reader (XMLReader): the xml data reader of the testing data
+        Return:
+            predction (dict): the prediction score of each class
+        """
         self.test_analyzer = Analyzer([('test', test_reader)])
         self.compute_occur()
         self.compute_composition()
+        
         # combine two similarity
         self.total_similarity = {x: 0 for x in self.analyzer.classes}
         for label in self.occur_similarity:
@@ -75,7 +84,13 @@ class RuleClassifier():
             self.occur_weight * self.occur_similarity[label] +\
             (1-self.occur_weight) * self.compose_similarity[label]
             self.total_similarity[label] = round(self.total_similarity[label], 2)
-        return self.total_similarity
+        
+        # Map the prediction value to (0, 1)
+        prediction = {}
+        for k, v in self.total_similarity.items():
+            prediction[k] = v / sum(self.total_similarity.values())
+
+        return prediction
 
     def compute_occur(self):
         """ For each feature, find out the class that the occurence is closest to the given data. """
