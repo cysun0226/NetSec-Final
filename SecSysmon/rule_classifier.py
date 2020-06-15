@@ -1,4 +1,4 @@
-from config import DROP_LIST, IMPORTANCE, OCCUR_WEIGHT
+from .config import DROP_LIST, IMPORTANCE, OCCUR_WEIGHT
 from scipy.spatial.distance import cosine
 import pandas as pd
 

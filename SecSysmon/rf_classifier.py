@@ -1,6 +1,6 @@
 from sklearn.feature_selection import SelectKBest, chi2, mutual_info_classif
 import pandas as pd
-from config import DROP_LIST
+from .config import DROP_LIST
 from sklearn.ensemble import RandomForestClassifier
 from collections import Counter
 import numpy as np
