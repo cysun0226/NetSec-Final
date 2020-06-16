@@ -24,7 +24,7 @@ def main():
                 if os.path.isdir(os.path.join(test_path,o))]
     
     # build the XML rule classifier
-    readers = [XMLReader(f"train_data/Person_{i}/Security.xml", f"train_data/Person_{i}/Sysmon.xml") for i in range(1, 7)]
+    readers = [XMLReader(f"sec_sysmon/train_data/Person_{i}/Security.xml", f"sec_sysmon/train_data/Person_{i}/Sysmon.xml") for i in range(1, 7)]
     input_data = [(i, readers[i-1]) for i in range(1, 7)]
     xml_classifier = RuleClassifier(input_data)
     
