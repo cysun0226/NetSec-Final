@@ -49,6 +49,9 @@ class Analyzer():
                     self.occurence[attr][label] = occur / len(reader.df_data[attr])
                 else:
                     self.occurence[attr][label] = 0
+                
+                values = { label: values[label]/sum(values.values()) if sum(values.values()) != 0 else 0 for label in values}
+
                 self.statistics[attr][label] = values
 
 class RuleClassifier():
@@ -89,7 +92,7 @@ class RuleClassifier():
         prediction = {}
         for k, v in self.total_similarity.items():
             prediction[k] = v / sum(self.total_similarity.values())
-
+        
         return prediction
 
     def compute_occur(self):
