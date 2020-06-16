@@ -1,6 +1,6 @@
 # NetSec-Final
 
-## Module structure
+## Module Structure
 ```
 .
 ├── main.py                     // Prediction executor
@@ -13,6 +13,18 @@
 └── wireshark
     ├── wireshark_analyzer.py
     └── wireshark_rule_classifier.py
+```
+
+## Prerequisites
+
+We have tested our project in the following environments:
+* `Python>=3.6`
+
+### Dependencies
+
+The required packages are listed in `requirements.txt`. The requirements can be installed by:
+```console
+$ pip3 install -r requirements.txt
 ```
 
 ## Usage
