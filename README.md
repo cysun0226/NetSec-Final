@@ -1,53 +1,51 @@
 # NetSec-Final
 
-## Modules
+## Module structure
 ```
-xml_reader      : Reader of Security.xml & Sysmon.xml
-rf_classifier   : RandomForest classifier & Feature selector
-rule_classifier : Compute the similarity and give scores according to pre-define weights
-config.py       : settings of dropout features, classifier weights, etc.
-sample.py       : Modules usage example
-
-Plot*           : Statistics charts of each feature
+.
+├── main.py                     // Prediction executor
+├── sec_sysmon
+│   ├── config.py               // SecSysmon predictor config file
+│   ├── rf_classifier.py        // RandomForest classifier (deprecated) & Feature selector 
+│   ├── rule_classifier.py      // Compute the similarity and give scores according to pre-define weights
+│   ├── train_data              // train_data is needed to build the sec_sysmon classifier
+│   └── xml_reader.py           // Reader of Security.xml & Sysmon.xml
+└── wireshark
+    ├── wireshark_analyzer.py
+    └── wireshark_rule_classifier.py
 ```
 
 ## Usage
-```python
-from xml_reader import XMLReader
-from rf_classifier import RFClassifier
-from rule_classifier import RuleClassifier
+```
+usage: main.py file_path [-v]
 
-# read training data
-readers = [XMLReader(f"Logs/Train/Person_{i}/Security.xml", f"Logs/Train/Person_{i}/Sysmon.xml") for i in range(1, 7)]
-input_data = [(i, readers[i-1]) for i in range(1, 7)]
+positional arguments:
+  file_path      Path to the test cases.
 
-# read testing data
-test_1 = XMLReader('Logs/Example Test/Test_1/Security.xml', 'Logs/Example Test/Test_1/Sysmon.xml')
-
-# build rule classifier
-rule_clf = RuleClassifier(input_data)
-
-# build random forest classifier
-rf_clf = RFClassifier(train_data=[reader.dataframe for reader in readers], test_data=test_1.dataframe)
-
-# predict results
-print("\nTest 1\n")
-print("# ML classifier")
-print(rf_clf.predict()[0])
-
-print("\n# Rule classifier")
-print(rule_clf.predict(test_1))
+optional arguments:
+  -v, --verbose  Display the detailed prediction results.
 ```
 
-## Execution result
+### Example
+```consle
+$  python3 main.py ./Logs/Example_Test
 ```
-Test 1
+#### Execution Result
+```console
+Test_1: person 1
+Test_2: person 2
+```
+#### Execution Result (verbose mode)
+```
+xml_result={1: 0.47177419354838707, 2: 0.32672188317349604, 3: 0.02041557686718977, 4: 0.0686573670444638, 5: 0.06734960767218831, 6: 0.04508137169427492}
+wireshart_result={1: 0.2201070755715069, 2: 0.16902404100562984, 3: 0.0737294995776457, 4: 0.17942123884445765, 5: 0.16915672057812758, 6: 0.18856142442263243}
+summary_result={1: 0.691881269119894, 2: 0.4957459241791259, 3: 0.09414507644483547, 4: 0.24807860588892144, 5: 0.2365063282503159, 6: 0.23364279611690736}
 
-# ML classifier
-[('5', 0.4745762711864407), ('1', 0.1016949152542373), ('3', 0.423728813559322)]
+Test_1: person 1
 
-# Rule classifier
-/home/cysun/.local/lib/python3.6/site-packages/scipy/spatial/distance.py:720: RuntimeWarning: invalid value encountered in double_scalars
-  dist = 1.0 - uv / np.sqrt(uu * vv)
-{1: 127.56, 2: 86.86, 3: 3.81, 4: 17.05, 5: 15.16, 6: 17.73}
+xml_result={1: 0.1800856287652029, 2: 0.49278217709241084, 3: 0.07520933580873716, 4: 0.1418179062630243, 5: 0.07191300723676733, 6: 0.03819194483385746}
+wireshart_result={1: 0.16468328526881995, 2: 0.23083532542302101, 3: 0.09998100916893977, 4: 0.2278788812044009, 5: 0.13146301433527358, 6: 0.14515848459954478}
+summary_result={1: 0.3447689140340229, 2: 0.7236175025154319, 3: 0.17519034497767694, 4: 0.3696967874674252, 5: 0.2033760215720409, 6: 0.18335042943340224}
+
+Test_2: person 2
 ```
