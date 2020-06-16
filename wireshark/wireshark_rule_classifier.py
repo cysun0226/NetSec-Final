@@ -3,7 +3,7 @@ import os
 import math
 from argparse import ArgumentParser
 
-from wireshark_analyzer import packet_key_cnt, packet_ip_count
+from .wireshark_analyzer import packet_key_cnt, packet_ip_count
 
 train_weight ={
     1: {"tcp": 74.13, "udp": 25.76, "http": 1.18, "140": 0.52, "163": 0.50},
@@ -13,12 +13,6 @@ train_weight ={
     5: {"tcp": 98.25, "udp": 1.74, "http": 1.35, "140": 0.31, "163": 84.95},
     6: {"tcp": 91.59, "udp": 8.39, "http": 8.53, "140": 0.09, "163": 58.71}
 }
-
-def build_argparser():
-    parser = ArgumentParser()
-    parser.add_argument("file_path", help="Path to the test dataset.", type=str)
-    return parser
-
 
 def cosine_similarity(dic1,dic2):
     sum11, sum12, sum22 = 0, 0, 0
@@ -75,26 +69,29 @@ def json_classifier(json_path):
     del ip_count
     return normalized_result
 
-def main():
-    args = build_argparser().parse_args()
-    test_path = args.file_path
-    
-    #test_path = "./Example Test" 
-    #test_path = "./Train"
-    
-    case_list = [os.path.join(test_path, o) for o in os.listdir(test_path) 
-                if os.path.isdir(os.path.join(test_path,o))]
-    
-    for case_path in case_list:
-        json_path = os.path.join(case_path, "Wireshark.json")
-        json_result = json_classifier(json_path)
-        
-        ### json_result = {1:val, 2:val, 3:val, 4:val, 5:val, 6:val}
-        ### sum of val = 1.0
+def wireshark_predict(json_path):
+    return json_classifier(json_path)
 
-        result = max(json_result, key=json_result.get)
-        print("{}: person {}".format(os.path.basename(case_path), result))
+# def main():
+#     args = build_argparser().parse_args()
+#     test_path = args.file_path
+    
+#     #test_path = "./Example Test" 
+#     #test_path = "./Train"
+    
+#     case_list = [os.path.join(test_path, o) for o in os.listdir(test_path) 
+#                 if os.path.isdir(os.path.join(test_path,o))]
+    
+#     for case_path in case_list:
+#         json_path = os.path.join(case_path, "Wireshark.json")
+#         json_result = json_classifier(json_path)
         
-if __name__ == '__main__':
-    main()
+#         ### json_result = {1:val, 2:val, 3:val, 4:val, 5:val, 6:val}
+#         ### sum of val = 1.0
+
+#         result = max(json_result, key=json_result.get)
+#         print("{}: person {}".format(os.path.basename(case_path), result))
+        
+# if __name__ == '__main__':
+#     main()
 
