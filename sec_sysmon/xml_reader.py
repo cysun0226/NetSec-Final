@@ -86,9 +86,11 @@ class XMLReader():
             for attr in self.attributes:
                 self.df_data[attr].append(event.get(attr))
             if 'Person_' in self.sec_file:
-                self.df_data['label'] = self.sec_file.split('Person_')[1].split('/')[0]
+                self.df_data['label'].append(self.sec_file.split('Person_')[1].split('/')[0])
             elif 'Test_' in self.sec_file:
-                self.df_data['label'] = self.sec_file.split('Test_')[1].split('/')[0]
+                self.df_data['label'].append(self.sec_file.split('Test_')[1].split('/')[0])
+            else:
+                self.df_data['label'].append(None)
         # convert time format
         self.handle_time_format()
         self.dataframe = pd.DataFrame(self.df_data)
