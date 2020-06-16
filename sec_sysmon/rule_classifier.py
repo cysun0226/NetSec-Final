@@ -130,6 +130,11 @@ class RuleClassifier():
                 for col in train_values:
                     if col not in test_values:
                         test_values[col] = 0
+                for col in test_values:
+                    if col not in train_values:
+                        train_values[col] = 0
+                if (len(train_values) != len(test_values)):
+                    continue
 
                 # compute the cosine similarity between each class and the given data
                 train_s = pd.Series(train_values)
