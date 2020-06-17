@@ -1,9 +1,10 @@
-# NetSec-Final
+# NetSec-Final Group 11
 
 ## Module Structure
 ```
 .
 ├── main.py                     // Prediction executor
+├── requirements.txt            // Project dependencies
 ├── sec_sysmon
 │   ├── config.py               // SecSysmon predictor config file
 │   ├── rf_classifier.py        // RandomForest classifier (deprecated) & Feature selector 
@@ -22,7 +23,7 @@ We have tested our project in the following environments:
 
 ### Dependencies
 
-The required packages are listed in `requirements.txt`. The requirements can be installed by:
+The required packages are listed in `requirements.txt`. The packages can be installed by
 ```console
 $ pip3 install -r requirements.txt
 ```
@@ -48,6 +49,7 @@ Test_1: person 1
 Test_2: person 2
 ```
 #### Execution Result (verbose mode)
+* The verbose mode will display the detailed prediction scores of each person of two predictors (wireshark & sec_sysmon)
 ```
 xml_result={1: 0.47177419354838707, 2: 0.32672188317349604, 3: 0.02041557686718977, 4: 0.0686573670444638, 5: 0.06734960767218831, 6: 0.04508137169427492}
 wireshart_result={1: 0.2201070755715069, 2: 0.16902404100562984, 3: 0.0737294995776457, 4: 0.17942123884445765, 5: 0.16915672057812758, 6: 0.18856142442263243}
